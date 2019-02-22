@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baizhi.dao.AdminLogDao">
+
+    <resultMap type="com.baizhi.entity.CmfzAdminLog" id="CmfzAdminLogMap">
+        <result property="logId" column="log_id" jdbcType="INTEGER"/>
+        <result property="logAction" column="log_action" jdbcType="VARCHAR"/>
+        <result property="adminUsername" column="admin_username" jdbcType="VARCHAR"/>
+        <result property="adminId" column="admin_id" jdbcType="INTEGER"/>
+        <result property="logDate" column="log_date" jdbcType="OTHER"/>
+        <result property="logIp" column="log_ip" jdbcType="VARCHAR"/>
+        <result property="logResult" column="log_result" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="CmfzAdminLogMap">
+        select
+          log_id, log_action, admin_username, admin_id, log_date, log_ip, log_result
+        from cmfz.cmfz_admin_log
+        where log_id = #{logId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="CmfzAdminLogMap">
+        select
+          log_id, log_action, admin_username, admin_id, log_date, log_ip, log_result
+        from cmfz.cmfz_admin_log
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="CmfzAdminLogMap">
+        select
+          log_id, log_action, admin_username, admin_id, log_date, log_ip, log_result
+        from cmfz.cmfz_admin_log
+        <where>
+            <if test="logId != null">
+                and log_id = #{logId}
+            </if>
+            <if test="logAction != null and logAction != ''">
+                and log_action = #{logAction}
+            </if>
+            <if test="adminUsername != null and adminUsername != ''">
+                and admin_username = #{adminUsername}
+            </if>
+            <if test="adminId != null">
+                and admin_id = #{adminId}
+            </if>
+            <if test="logDate != null">
+                and log_date = #{logDate}
+            </if>
+            <if test="logIp != null and logIp != ''">
+                and log_ip = #{logIp}
+            </if>
+            <if test="logResult != null and logResult != ''">
+                and log_result = #{logResult}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="logId" useGeneratedKeys="true">
+        insert into cmfz.cmfz_admin_log(log_action, admin_username, admin_id, log_date, log_ip, log_result)
+        values (#{logAction}, #{adminUsername}, #{adminId}, #{logDate}, #{logIp}, #{logResult})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update cmfz.cmfz_admin_log
+        <set>
+            <if test="logAction != null and logAction != ''">
+                log_action = #{logAction},
+            </if>
+            <if test="adminUsername != null and adminUsername != ''">
+                admin_username = #{adminUsername},
+            </if>
+            <if test="adminId != null">
+                admin_id = #{adminId},
+            </if>
+            <if test="logDate != null">
+                log_date = #{logDate},
+            </if>
+            <if test="logIp != null and logIp != ''">
+                log_ip = #{logIp},
+            </if>
+            <if test="logResult != null and logResult != ''">
+                log_result = #{logResult},
+            </if>
+        </set>
+        where log_id = #{logId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from cmfz.cmfz_admin_log where log_id = #{logId}
+    </delete>
+
+</mapper>

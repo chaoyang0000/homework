@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baizhi.dao.PatientDao">
+    <select id="selectByPage" resultType="com.baizhi.entity.TPatient">
+       select * from t_patient where 1=1
+       <if test="name!=null">
+           and name=#{name}
+       </if>
+        limit #{start},#{rows}
+    </select>
+
+    <select id="getCount" resultType="int">
+        select count(*) from t_patient where 1=1
+        <if test="name!=null">
+            and name=#{name}
+        </if>
+    </select>
+
+    <insert id="insertPatient">
+        insert into t_patient values(0,#{name},#{sex},#{birth},#{idcard},#{address},#{mobile})
+    </insert>
+
+    <update id="updatePatient">
+        update t_patient set name=#{name},sex=#{sex},idcard=#{idcard},address=#{address},mobile=#{mobile} where id=#{id}
+    </update>
+
+    <delete id="multiDelete">
+        delete from t_patient where id in
+        <foreach collection="array" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectById" resultType="com.baizhi.entity.TPatient">
+        select * from t_patient where id=#{id}
+    </select>
+
+    <update id="updatePatientStatus">
+        update t_patient set status=1 where id=#{id}
+    </update>
+</mapper>

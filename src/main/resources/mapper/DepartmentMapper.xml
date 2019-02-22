@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baizhi.dao.DepartmentDao">
+    <select id="selectByPage" resultType="com.baizhi.entity.TDepartment">
+       select * from t_department where 1=1
+       <if test="name!=null">
+           and name=#{name}
+       </if>
+        limit #{start},#{rows}
+    </select>
+
+    <select id="getCount" resultType="int">
+        select count(*) from t_department where 1=1
+        <if test="name!=null">
+            and name=#{name}
+        </if>
+    </select>
+
+    <insert id="insertDepartment">
+        insert into t_department values(0,#{name},#{telephone},#{area})
+    </insert>
+
+    <update id="updateDepartment">
+        update t_department set name=#{name},telephone=#{telephone},area=#{area} where id=#{id}
+    </update>
+
+    <delete id="multiDelete">
+        delete from t_department where id in
+        <foreach collection="array" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectAll" resultType="com.baizhi.entity.TDepartment">
+        select * from t_department
+    </select>
+</mapper>

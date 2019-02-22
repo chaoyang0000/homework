@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baizhi.dao.ExamDao">
+    <resultMap id="a1" type="com.baizhi.entity.TExam">
+        <id column="id" property="id"></id>
+        <result column="exam_status" property="examStatus"></result>
+        <result column="exam_advice" property="examAdvice"></result>
+        <result column="exam_start_date" property="examStartDate"></result>
+        <result column="exam_end_date" property="examEndDate"></result>
+        <result column="d_id" property="dId"></result>
+    </resultMap>
+
+    <insert id="insertExam">
+        insert into t_exam values(0,#{examStatus},#{examAdvice},sysdate(),sysdate(),#{dId})
+    </insert>
+
+    <select id="getExam" resultMap="a1">
+        select * from t_exam where d_id=#{id}
+    </select>
+
+</mapper>

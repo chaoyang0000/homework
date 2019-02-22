@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baizhi.dao.DrugDao">
+    <resultMap id="a1" type="com.baizhi.entity.TDrug">
+            <result property="id" column="id" />
+            <result property="name" column="name" />
+            <result property="spec" column="spec" />
+            <result property="unit" column="unit" />
+            <result property="productCompany" column="product_company" />
+            <result property="productDate" column="product_date" />
+            <result property="okDate" column="ok_date" />
+            <result property="importPrice" column="import_price" />
+            <result property="price" column="price"/>
+            <result property="saleStatus" column="sale_status" />
+            <result property="isImport" column="is_import" />
+            <result property="description" column="description" />
+    </resultMap>
+
+    <resultMap id="a2" type="com.baizhi.entity.TDrug">
+        <id column="id" property="id"></id>
+        <result property="name" column="name" />
+        <result property="productCompany" column="product_company" />
+        <association property="tExam" javaType="com.baizhi.entity.TExam">
+            <result column="exam_status" property="examStatus"></result>
+            <result column="exam_start_date" property="examStartDate"></result>
+            <result column="exam_end_date" property="examEndDate"></result>
+        </association>
+    </resultMap>
+    <select id="selectByPage" resultMap="a1">
+       SELECT
+	t3.*
+FROM
+	(
+		SELECT
+			t1.*
+		FROM
+			t_drug t1
+		INNER JOIN t_exam t2 ON t1.id = t2.d_id
+		WHERE
+			t2.exam_status = 1
+	) t3
+WHERE 1=1
+	<if test="name!=null">
+        and name=#{name}
+    </if>
+LIMIT #{start},
+ #{rows}
+
+    </select>
+
+    <select id="getCount" resultType="int">
+        select count(*) from t_drug where 1=1
+        <if test="name!=null">
+            and name=#{name}
+        </if>
+    </select>
+
+    <insert id="insertDrug">
+        insert into t_drug values(0,#{name},#{spec},#{unit},#{productCompany},#{productDate},#{okDate},#{importPrice},#{price},#{saleStatus},#{isImport},#{description})
+    </insert>
+
+    <update id="updateDrug">
+        update t_drug set name=#{name},spec=#{spec},unit=#{unit},product_company=#{productCompany},import_price=#{importPrice},price=#{price},sale_status=#{saleStatus},description=#{description} where id=#{id}
+    </update>
+
+    <delete id="multiDelete">
+        delete from t_drug where id in
+        <foreach collection="array" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--修改状态-->
+    <update id="updateSaleStatus">
+        update t_drug set
+        <if test="saleStatus==0">
+            sale_status=1
+        </if>
+        <if test="saleStatus==1">
+            sale_status=0
+        </if>
+        where id=#{id}
+    </update>
+
+    <!--查询id-->
+    <select id="getId" resultType="int">
+        select id from t_drug where name=#{name}
+    </select>
+
+    <!--根据id进行查询-->
+    <select id="getDrug" resultMap="a1">
+        select * from t_drug where id=#{id}
+    </select>
+
+
+    <select id="getAllExamAndDrug" resultMap="a2">
+     SELECT
+	t1.id,
+	t1. NAME,
+	t2.exam_status,
+	t1.product_company,
+	t2.exam_start_date,
+	t2.exam_end_date
+FROM
+	t_drug t1
+LEFT JOIN t_exam t2 ON t1.id = t2.d_id
+    </select>
+</mapper>
